@@ -23,7 +23,7 @@ topic_name = ''
 kafka_broker = ''
 filename = "twitter-data.csv"
 # new-line character seen in unquoted field, so open file in universal-newline mode
-data_file = open(filename, "rU")
+data_file = open(filename, "rU", encoding='utf-8')
 reader = csv.reader(data_file)
 
 def fetch_tweet(producer):

@@ -13,6 +13,9 @@ import logging
 import schedule
 import time
 
+import codecs
+import sys
+
 logging.basicConfig()
 logger = logging.getLogger('data-producer')
 
@@ -22,8 +25,10 @@ logger.setLevel(logging.DEBUG)
 topic_name = ''
 kafka_broker = ''
 filename = "twitter-data.csv"
+reload(sys)
 # new-line character seen in unquoted field, so open file in universal-newline mode
-data_file = open(filename, "rU", encoding='utf-8')
+data_file = open(filename, "rU", encoding='ISO-8859-1')
+sys.setdefaultencoding('utf-8')
 reader = csv.reader(data_file)
 
 def fetch_tweet(producer):

@@ -1,5 +1,5 @@
 # Capstone
-Tweeter Analyzer
+Tweet Analyzer
 
 ## Start Zookeeper, Kafka, Cassandra from docker image
 ```sh
@@ -21,3 +21,11 @@ python data-producer.py tweet-analyzer 127.0.0.1:9092
 # Start data-storage
 python data-storage.py twttier-analyzer localhost:9092 tweet tweet localhost
 ```
+
+## Use kafka consumer to read from kafka topic
+open a python terminal
+```python
+from kafka import KafkaConsumer
+consumer = KafkaConsumer('tweet-analyzer',bootstrap_servers='127.0.0.1:9092')
+for msg in consumer:
+	print(msg)

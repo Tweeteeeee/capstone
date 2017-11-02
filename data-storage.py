@@ -52,26 +52,26 @@ def persist_data(tweet_data, cassandra_session):
     :return: None
     """
     try:
-        logger.debug('Start to persist data to cassandra %s', tweet_data)
+        logger.debug('Start to persist data to cassandra %s \n', tweet_data)
         parsed = json.loads(tweet_data)
-        _unit_id = parsed.get('_unit_id')
+        unit_id = str(parsed.get('_unit_id'))
         gender = parsed.get('gender')
-        description = parsed.get('description')
-        name = parsed.get('name')
+        description = str(parsed.get('description'))
+        name = str(parsed.get('name'))
         retweet_count = parsed.get('retweet_count')
-        tweet_text = parsed.get('text')
+        tweet_text = str(parsed.get('text'))
         tweet_coord = parsed.get('tweet_coord')
         tweet_count = parsed.get('tweet_count')
         tweet_created = parsed.get('tweet_created')
-        tweet_id = parsed.get('tweet_id')
+        tweet_id = str(parsed.get('tweet_id'))
         tweet_location = parsed.get('tweet_location')
         user_timezone = parsed.get('user_timezone')
 
-        statement = "INSERT INTO %s (_unit_id, name, tweet_text) VALUES ('%s', '%s', %f)" % (data_table, _unit_id, name, tweet_text)
+        statement = "INSERT INTO %s (unit_id, name, description ) VALUES ('%s', '%s', '%s')" % (data_table, unit_id, name, description)
         cassandra_session.execute(statement)
-        logger.info('Persistend data to cassandra for _unit_id: %s, name: %f, tweet_text: %s' % (_unit_id, name, tweet_text))
-    except Exception:
-        logger.error('Failed to persist data to cassandra %s', tweet_data)
+        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, description: %s \n' % (unit_id, name, description))
+    except Exception as e:
+        logger.error('Failed to persist data to cassandra %s %s \n', tweet_data, e)
 
 
 def shutdown_hook(consumer, session):
@@ -103,8 +103,10 @@ if __name__ == '__main__':
     parser.add_argument('data_table', help='the data table to use')
     parser.add_argument('contact_points', help='the contact points for cassandra')
 
+    logger.debug("hello")
     # - parse arguments
     args = parser.parse_args()
+    logger.debug(args);
     topic_name = args.topic_name
     kafka_broker = args.kafka_broker
     key_space = args.key_space
@@ -116,7 +118,7 @@ if __name__ == '__main__':
         topic_name,
         bootstrap_servers=kafka_broker
     )
-
+        
     # - initiate a cassandra session
     cassandra_cluster = Cluster(
         contact_points=contact_points.split(',')
@@ -126,7 +128,8 @@ if __name__ == '__main__':
 
     session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
     session.set_keyspace(key_space)
-    session.execute("CREATE TABLE IF NOT EXISTS %s (_unit_id int, name text, tweet_text float, PRIMARY KEY (_unit_id))" % data_table)
+    session.execute("DROP TABLE %s" % data_table)
+    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, description text, PRIMARY KEY (unit_id, name))" % data_table)
 
     # - setup proper shutdown hook
     atexit.register(shutdown_hook, consumer, session)

@@ -19,7 +19,7 @@ docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cassand
 python data-producer.py tweet-analyzer 127.0.0.1:9092
 
 # Start data-storage
-python data-storage.py twttier-analyzer localhost:9092 tweet tweet localhost
+python data-storage.py tweet-analyzer localhost:9092 tweet tweet localhost
 ```
 
 ## Use kafka consumer to read from kafka topic

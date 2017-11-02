@@ -1,7 +1,7 @@
 # Capstone
 Tweeter Analyzer
 
-## Run Zookeeper, Kafka, Cassandra in docker
+## Start Zookeeper, Kafka, Cassandra from docker image
 ```sh
 # Zookeeper
 docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/zookeeper
@@ -13,7 +13,7 @@ docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVE
 docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cassandra cassandra:3.7
 ```
 
-## Start Kafka, Cassandra service
+## Start Producer, Storage
 ```sh
 # Start data-producer
 python data-producer.py tweet-analyzer 127.0.0.1:9092

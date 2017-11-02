@@ -128,7 +128,6 @@ if __name__ == '__main__':
 
     session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
     session.set_keyspace(key_space)
-    session.execute("DROP TABLE %s" % data_table)
     session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, description text, PRIMARY KEY (unit_id, name))" % data_table)
 
     # - setup proper shutdown hook

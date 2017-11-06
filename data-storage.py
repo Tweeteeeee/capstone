@@ -67,9 +67,9 @@ def persist_data(tweet_data, cassandra_session):
         tweet_location = parsed.get('tweet_location')
         user_timezone = parsed.get('user_timezone')
 
-        statement = "INSERT INTO %s (unit_id, name, description ) VALUES ('%s', '%s', '%s')" % (data_table, unit_id, name, description)
+        statement = "INSERT INTO %s (unit_id, name, description, tweet_text ) VALUES ('%s', '%s', '%s', '%s')" % (data_table, unit_id, name, description, tweet_text)
         cassandra_session.execute(statement)
-        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, description: %s \n' % (unit_id, name, description))
+        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, description: %s, tweet_text: %s \n' % (unit_id, name, description, tweet_text))
     except Exception as e:
         logger.error('Failed to persist data to cassandra %s %s \n', tweet_data, e)
 
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
     session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
     session.set_keyspace(key_space)
-    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, description text, PRIMARY KEY (unit_id, name))" % data_table)
+    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, description text, tweet_text text, PRIMARY KEY (unit_id, name))" % data_table)
 
     # - setup proper shutdown hook
     atexit.register(shutdown_hook, consumer, session)

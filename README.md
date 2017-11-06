@@ -29,3 +29,28 @@ from kafka import KafkaConsumer
 consumer = KafkaConsumer('tweet-analyzer',bootstrap_servers='127.0.0.1:9092')
 for msg in consumer:
 	print(msg)
+```
+
+## Read from cassandra
+```sh
+python data-processor.py tweet tweet localhost
+```
+## Extract Twitter entities
+According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
+
+```json
+"entities":
+{
+    "hashtags":[],
+    "urls":[],
+    "user_mentions":[],
+    "media":[],
+    "symbols":[]
+    "polls":[]
+}
+```
+
+[Twitter-text-python](https://github.com/edburnett/twitter-text-python)
+
+This package can be used to extract user_mentions, hashtags, URLs and format as HTML for display.
+

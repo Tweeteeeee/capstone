@@ -38,7 +38,7 @@ entity_parser = ttp.Parser()
 
 def normalize_location(loc):
     if loc is None or not loc:
-            return ''
+        return ''
     location = geograpy.get_place_context(text=loc)
 
     country = ''

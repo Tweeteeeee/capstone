@@ -54,3 +54,10 @@ According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/t
 
 This package can be used to extract user_mentions, hashtags, URLs and format as HTML for display.
 
+## Extract location
+Extract place names from a URL or text
+
+- [Geograpy](https://github.com/ushahidi/geograpy) - picked this one for now
+- [geotext](https://github.com/elyase/geotext)
+
+geograpy is more advanced and bigger in scope compared to geotext and can do everything geotext does. On the other hand geotext is leaner: has no external dependencies, is faster (re vs nltk) and also depends on libraries and data covered with more permissive licenses.

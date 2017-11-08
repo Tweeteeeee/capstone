@@ -45,7 +45,7 @@ According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/t
     "urls":[],
     "user_mentions":[],
     "media":[],
-    "symbols":[]
+    "symbols":[],
     "polls":[]
 }
 ```

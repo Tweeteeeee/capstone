@@ -34,18 +34,20 @@ def persist_data(tweet_data, cassandra_session):
     :param tweet_data:
         the tweet data looks like this:
         [{
-			'_unit_id': fields[0],
-			'gender': fields[5],
-			'description': fields[10],
-			'name': fields[14],
-			'retweet_count': fields[17],
-			'text': fields[19],
-			'tweet_coord': fields[20],
-			'tweet_count': fields[21],
-			'tweet_created': fields[22],
-			'tweet_id': fields[23],
-			'tweet_location': fields[24],
-			'user_timezone': fields[25]
+            '_unit_id': fields[0],
+            'gender': fields[5],
+            'description': fields[10],
+            'name': fields[14],
+            'retweet_count': fields[17],
+            'text': fields[19],
+            'hashtags': hashtags
+            'tweet_coord': fields[20],
+            'tweet_count': fields[21],
+            'tweet_created': fields[22],
+            'tweet_id': fields[23],
+            'tweet_location': tweet_location,
+            'normalized_location': normalized_location,
+            'user_timezone': fields[25]
         }]
     :param cassandra_session:
 
@@ -60,16 +62,19 @@ def persist_data(tweet_data, cassandra_session):
         name = str(parsed.get('name'))
         retweet_count = parsed.get('retweet_count')
         tweet_text = str(parsed.get('text'))
+        hashtags = parsed.get('hashtags')
         tweet_coord = parsed.get('tweet_coord')
         tweet_count = parsed.get('tweet_count')
         tweet_created = parsed.get('tweet_created')
         tweet_id = str(parsed.get('tweet_id'))
         tweet_location = parsed.get('tweet_location')
+        normalized_location = parsed.get('normalized_location')
         user_timezone = parsed.get('user_timezone')
 
-        statement = "INSERT INTO %s (unit_id, name, description, tweet_text ) VALUES ('%s', '%s', '%s', '%s')" % (data_table, unit_id, name, description, tweet_text)
-        cassandra_session.execute(statement)
-        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, description: %s, tweet_text: %s \n' % (unit_id, name, description, tweet_text))
+        # statement = "INSERT INTO %s (unit_id, name, tweet_text, tweet_location, normalized_location) VALUES ('%s', '%s', '%s', '%s', '$s')" % (data_table, unit_id, name, tweet_text, tweet_location, normalized_location)
+        statement = cassandra_session.prepare("INSERT INTO %s (unit_id, name, tweet_text, hashtags, tweet_location, normalized_location) VALUES (?, ?, ?, ?, ?, ?)" % data_table)
+        cassandra_session.execute(statement, (unit_id, name, tweet_text, hashtags, tweet_location, normalized_location))
+        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, tweet_text: %s, hashtags %s, tweet_location: %s, normalized_location: %s\n' % (unit_id, name, tweet_text, hashtags, tweet_location, normalized_location))
     except Exception as e:
         logger.error('Failed to persist data to cassandra %s %s \n', tweet_data, e)
 
@@ -103,7 +108,6 @@ if __name__ == '__main__':
     parser.add_argument('data_table', help='the data table to use')
     parser.add_argument('contact_points', help='the contact points for cassandra')
 
-    logger.debug("hello")
     # - parse arguments
     args = parser.parse_args()
     logger.debug(args);
@@ -125,10 +129,10 @@ if __name__ == '__main__':
     )
     session = cassandra_cluster.connect()
 
-
+    # session.execute("DROP KEYSPACE IF EXISTS %s" % (key_space))
     session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
     session.set_keyspace(key_space)
-    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, description text, tweet_text text, PRIMARY KEY (unit_id, name))" % data_table)
+    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, tweet_text text, hashtags list<text>, tweet_location text, normalized_location text, PRIMARY KEY (unit_id, name))" % data_table)
 
     # - setup proper shutdown hook
     atexit.register(shutdown_hook, consumer, session)

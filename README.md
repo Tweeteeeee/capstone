@@ -35,6 +35,11 @@ for msg in consumer:
 ```sh
 python data-processor.py tweet tweet localhost
 ```
+
+## Store data to Redis
+```python
+python redis-publisher.py tweet-analyzer localhost:9092 tweet localhost 6379
+```
 ## Extract Twitter entities
 According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
 

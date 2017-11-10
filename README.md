@@ -1,6 +1,17 @@
 # Capstone
 Tweet Analyzer
 
+## Requirements
+```
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Pipeline
+RawData --> Kafka -> Spark -> Kafka -> Redis -> Node.js
+              |                 |  
+              -> Cassandra      -> Cassandra      
+
 ## Start Zookeeper, Kafka, Cassandra, Redis from docker image
 ```sh
 # Zookeeper
@@ -23,6 +34,12 @@ python data-producer.py tweet-analyzer 127.0.0.1:9092
 
 # Start data-storage
 python data-storage.py tweet-analyzer localhost:9092 tweet tweet localhost
+
+# Start Redis
+python redis-publisher.py tweet-analyzer localhost:9092 tweet localhost 6379
+
+# Start stream-processing.py
+spark-submit --jars spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar stream-processing.py tweet-analyzer tweet-compute 127.0.0.1:9092
 ```
 
 ## Use kafka consumer to read from kafka topic
@@ -37,11 +54,6 @@ for msg in consumer:
 ## Read from cassandra
 ```sh
 python data-processor.py tweet tweet localhost
-```
-
-## Store data to Redis
-```sh
-python redis-publisher.py tweet-analyzer localhost:9092 tweet localhost 6379
 ```
 
 ## Read data from Redis channel

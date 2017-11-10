@@ -10,8 +10,7 @@ pip install -r requirements.txt
 ## Pipeline
 ```
 RawData -> Kafka -> Spark -> Kafka -> Redis -> Node.js
-            |                 |  
-             -> Cassandra      -> Cassandra      
+            ╰> Cassandra      ╰> Cassandra
 ```
 
 ## Start Zookeeper, Kafka, Cassandra, Redis from docker image

@@ -1,7 +1,7 @@
 # Capstone
 Tweet Analyzer
 
-## Start Zookeeper, Kafka, Cassandra from docker image
+## Start Zookeeper, Kafka, Cassandra, Redis from docker image
 ```sh
 # Zookeeper
 docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/zookeeper
@@ -11,6 +11,9 @@ docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVE
 
 # Cassandra
 docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cassandra cassandra:3.7
+
+# Redis
+docker run -d -p 6379:6379 --name redis redis:alpine
 ```
 
 ## Start Producer, Storage
@@ -28,7 +31,7 @@ open a python terminal
 from kafka import KafkaConsumer
 consumer = KafkaConsumer('tweet-analyzer',bootstrap_servers='127.0.0.1:9092')
 for msg in consumer:
-	print(msg)
+    print(msg)
 ```
 
 ## Read from cassandra
@@ -37,9 +40,18 @@ python data-processor.py tweet tweet localhost
 ```
 
 ## Store data to Redis
-```python
+```sh
 python redis-publisher.py tweet-analyzer localhost:9092 tweet localhost 6379
 ```
+
+## Read data from Redis channel
+run redis-cli
+```sh
+/usr/local/Cellar/redis/4.0.2/bin/redis-cli -h localhost
+
+SUBSCRIBE tweet
+```
+
 ## Extract Twitter entities
 According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
 

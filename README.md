@@ -64,7 +64,10 @@ run redis-cli
 
 SUBSCRIBE tweet
 ```
-
+## pig load data from cassandra
+```sh
+pig -x local pig-script.pig
+```
 ## Extract Twitter entities
 According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
 
@@ -91,3 +94,5 @@ Extract place names from a URL or text
 - [geotext](https://github.com/elyase/geotext)
 
 geograpy is more advanced and bigger in scope compared to geotext and can do everything geotext does. On the other hand geotext is leaner: has no external dependencies, is faster (re vs nltk) and also depends on libraries and data covered with more permissive licenses.
+
+

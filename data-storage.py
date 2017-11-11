@@ -8,7 +8,7 @@ import json
 import logging
 
 # - default kafka topic to read from
-topic_name = 'twitter-analyzer'
+topic_name = 'tweet-analyzer'
 
 # - default kafka broker location
 kafka_broker = '127.0.0.1:9092'

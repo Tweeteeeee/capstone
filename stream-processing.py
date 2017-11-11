@@ -46,18 +46,13 @@ def process_stream(stream):
     def send_to_kafka(rdd):
         results = rdd.collect()
         for r in results:
-            data = json.dumps(
-                {
-                    'a': r[0],
-                    'timestamp': time.time(),
-                    'b': r[1]
-                }
-            )
+            logger.info(r);
+            data = json.dumps(r[1])
             try:
-                logger.info('Sending average price %s to kafka' % data)
+                logger.info('Sending tweet analysis result %s to kafka' % data)
                 kafka_producer.send(target_topic, value=data)
             except KafkaError as error:
-                logger.warn('Failed to send average stock price to kafka, caused by: %s', error.message)
+                logger.warn('Failed to send average tweet analysis result to kafka, caused by: %s', error.message)
 
     stream.foreachRDD(send_to_kafka)
 

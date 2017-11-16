@@ -32,7 +32,7 @@ filename = "twitter-data.csv"
 reload(sys)
 # new-line character seen in unquoted field, so open file in universal-newline mode
 data_file = io.open(filename, "rU", encoding='ISO-8859-1')
-sys.setdefaultencoding('ISO-8859-1')
+sys.setdefaultencoding('utf-8')
 reader = csv.reader(data_file)
 entity_parser = ttp.Parser()
 

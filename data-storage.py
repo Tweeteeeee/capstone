@@ -62,7 +62,7 @@ def persist_data(tweet_data, cassandra_session):
         name = str(parsed.get('name'))
         retweet_count = parsed.get('retweet_count')
         tweet_text = str(parsed.get('text'))
-        hashtags = parsed.get('hashtags')
+        hashtags = str(parsed.get('hashtags'))
         tweet_coord = parsed.get('tweet_coord')
         tweet_count = parsed.get('tweet_count')
         tweet_created = parsed.get('tweet_created')
@@ -129,10 +129,10 @@ if __name__ == '__main__':
     )
     session = cassandra_cluster.connect()
 
-    # session.execute("DROP KEYSPACE IF EXISTS %s" % (key_space))
+    session.execute("DROP KEYSPACE IF EXISTS %s" % (key_space))
     session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
     session.set_keyspace(key_space)
-    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, tweet_text text, hashtags list<text>, tweet_count text, tweet_location text, normalized_location text, PRIMARY KEY (unit_id, name))" % data_table)
+    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, tweet_text text, hashtags text, tweet_count text, tweet_location text, normalized_location text, PRIMARY KEY (unit_id, name))" % data_table)
 
     # - setup proper shutdown hook
     atexit.register(shutdown_hook, consumer, session)

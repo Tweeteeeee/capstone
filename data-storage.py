@@ -72,9 +72,9 @@ def persist_data(tweet_data, cassandra_session):
         user_timezone = parsed.get('user_timezone')
 
         # statement = "INSERT INTO %s (unit_id, name, tweet_text, tweet_location, normalized_location) VALUES ('%s', '%s', '%s', '%s', '$s')" % (data_table, unit_id, name, tweet_text, tweet_location, normalized_location)
-        statement = cassandra_session.prepare("INSERT INTO %s (unit_id, name, tweet_text, hashtags, tweet_location, normalized_location) VALUES (?, ?, ?, ?, ?, ?)" % data_table)
-        cassandra_session.execute(statement, (unit_id, name, tweet_text, hashtags, tweet_location, normalized_location))
-        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, tweet_text: %s, hashtags %s, tweet_location: %s, normalized_location: %s\n' % (unit_id, name, tweet_text, hashtags, tweet_location, normalized_location))
+        statement = cassandra_session.prepare("INSERT INTO %s (unit_id, name, tweet_text, hashtags, tweet_count, tweet_location, normalized_location) VALUES (?, ?, ?, ?, ?, ?, ?)" % data_table)
+        cassandra_session.execute(statement, (unit_id, name, tweet_text, hashtags, tweet_count, tweet_location, normalized_location))
+        logger.info('Persisted data to cassandra for unit_id: %s, name: %s, tweet_text: %s, hashtags: %s, tweet_count: %s, tweet_location: %s, normalized_location: %s\n' % (unit_id, name, tweet_text, hashtags, tweet_count, tweet_location, normalized_location))
     except Exception as e:
         logger.error('Failed to persist data to cassandra %s %s \n', tweet_data, e)
 
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     # session.execute("DROP KEYSPACE IF EXISTS %s" % (key_space))
     session.execute("CREATE KEYSPACE IF NOT EXISTS %s WITH replication = {'class': 'SimpleStrategy', 'replication_factor': '3'} AND durable_writes = 'true'" % key_space)
     session.set_keyspace(key_space)
-    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, tweet_text text, hashtags list<text>, tweet_location text, normalized_location text, PRIMARY KEY (unit_id, name))" % data_table)
+    session.execute("CREATE TABLE IF NOT EXISTS %s (unit_id text, name text, tweet_text text, hashtags list<text>, tweet_count text, tweet_location text, normalized_location text, PRIMARY KEY (unit_id, name))" % data_table)
 
     # - setup proper shutdown hook
     atexit.register(shutdown_hook, consumer, session)

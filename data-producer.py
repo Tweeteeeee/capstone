@@ -32,7 +32,7 @@ filename = "twitter-data.csv"
 reload(sys)
 # new-line character seen in unquoted field, so open file in universal-newline mode
 data_file = io.open(filename, "rU", encoding='ISO-8859-1')
-sys.setdefaultencoding('utf-8')
+sys.setdefaultencoding('ISO-8859-1')
 reader = csv.reader(data_file)
 entity_parser = ttp.Parser()
 
@@ -59,7 +59,14 @@ def fetch_tweet(producer):
         normalized_location = normalize_location(tweet_location)
 
         tweet_text = fields[19]
-        hashtags = extract_hashtags(tweet_text)
+        hashtags = []
+        try:
+            hashtags = extract_hashtags(tweet_text)
+        except UnicodeDecodeError:
+            logger.info("tweet text: %s" % tweet_text)
+        except Exception as e:
+            logger.warn("Exception: %s" % e)
+
         data = {
             '_unit_id': fields[0],
             'gender': fields[5],

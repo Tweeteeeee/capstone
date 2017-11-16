@@ -9,7 +9,7 @@ pip install -r requirements.txt
 
 ## Pipeline
 ```
-RawData -> Kafka -> Spark -> Kafka -> Redis ---> Node.js
+RawData -> Kafka -> Spark -> Kafka -> Redis ---> ELK
             ╰> Cassandra -> Pig -> Cassandra -╯
 ```
 
@@ -21,12 +21,19 @@ docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/
 # Kafka
 docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka --link zookeeper:zookeeper confluent/kafka
 
-# Cassandra
-docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cassandra cassandra:3.7
+# Cassandra [1]
+docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cass1 cassandra:2.1.19
+
+# commented out previous way to run cassandra
+# docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cassandra cassandra:3.7
 
 # Redis
 docker run -d -p 6379:6379 --name redis redis:alpine
 ```
+
+[1] For pig to be able to read from Cassandra, has to use cassandra:2.1.x
+
+See [class CqlStorage is not there in latest versions of apache-cassandra-X.X.X.jar](https://stackoverflow.com/questions/34300458/why-the-class-cqlstorage-is-not-there-in-latest-versions-of-apache-cassandra-x-x/34300572){:target="_blank"}
 
 ## Start Producer, Storage
 ```sh
@@ -52,12 +59,12 @@ for msg in consumer:
     print(msg)
 ```
 
-## Read from cassandra
+## Read data from cassandra
 ```sh
 python data-processor.py tweet tweet localhost
 ```
 
-## Read data from Redis channel
+## Read data from redis channel
 run redis-cli
 ```sh
 /usr/local/Cellar/redis/4.0.2/bin/redis-cli -h localhost
@@ -66,10 +73,22 @@ SUBSCRIBE tweet
 ```
 ## pig load data from cassandra
 ```sh
-pig -x local pig-script.pig
+# start pig docker image
+docker run -d -P -p 2222:22 -p 8000:8000 -p 19888:19888 -p 8088:8088 -p 50070:50070 -v /path_to_capstone/capstone:/src --name pig daijyc/week2_1
+
+cd hadoop-2.7.3/
+./start-all.sh
+export PIG_INITIAL_ADDRESS=192.168.1.100; # replace with your ip address
+# find your host machine ip address, go to a new terminal
+ifconfig | grep inet
+export PIG_RPC_PORT=9160;
+export PIG_PARTITIONER=org.apache.cassandra.dht.Murmur3Partitioner;
+
+pig tweet-count-cassandra.pig
+# check job running status in http://localhost:8088/
 ```
 ## Extract Twitter entities
-According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
+According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object){:target="_blank"}
 
 ```json
 "entities":
@@ -83,16 +102,14 @@ According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/t
 }
 ```
 
-[Twitter-text-python](https://github.com/edburnett/twitter-text-python)
+[Twitter-text-python](https://github.com/edburnett/twitter-text-python){:target="_blank"}
 
 This package can be used to extract user_mentions, hashtags, URLs and format as HTML for display.
 
 ## Extract location
 Extract place names from a URL or text
 
-- [Geograpy](https://github.com/ushahidi/geograpy) - picked this one for now
-- [geotext](https://github.com/elyase/geotext)
+- [Geograpy](https://github.com/ushahidi/geograpy){:target="_blank"} - picked this one for now
+- [geotext](https://github.com/elyase/geotext){:target="_blank"}
 
 geograpy is more advanced and bigger in scope compared to geotext and can do everything geotext does. On the other hand geotext is leaner: has no external dependencies, is faster (re vs nltk) and also depends on libraries and data covered with more permissive licenses.
-
-

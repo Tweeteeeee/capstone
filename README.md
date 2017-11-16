@@ -33,7 +33,7 @@ docker run -d -p 6379:6379 --name redis redis:alpine
 
 [1] For pig to be able to read from Cassandra, has to use cassandra:2.1.x
 
-See [class CqlStorage is not there in latest versions of apache-cassandra-X.X.X.jar](https://stackoverflow.com/questions/34300458/why-the-class-cqlstorage-is-not-there-in-latest-versions-of-apache-cassandra-x-x/34300572){:target="_blank"}
+See [class CqlStorage is not there in latest versions of apache-cassandra-X.X.X.jar](https://stackoverflow.com/questions/34300458/why-the-class-cqlstorage-is-not-there-in-latest-versions-of-apache-cassandra-x-x/34300572)
 
 ## Start Producer, Storage
 ```sh
@@ -88,7 +88,7 @@ pig tweet-count-cassandra.pig
 # check job running status in http://localhost:8088/
 ```
 ## Extract Twitter entities
-According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object){:target="_blank"}
+According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
 
 ```json
 "entities":
@@ -102,14 +102,14 @@ According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/t
 }
 ```
 
-[Twitter-text-python](https://github.com/edburnett/twitter-text-python){:target="_blank"}
+[Twitter-text-python](https://github.com/edburnett/twitter-text-python)
 
 This package can be used to extract user_mentions, hashtags, URLs and format as HTML for display.
 
 ## Extract location
 Extract place names from a URL or text
 
-- [Geograpy](https://github.com/ushahidi/geograpy){:target="_blank"} - picked this one for now
-- [geotext](https://github.com/elyase/geotext){:target="_blank"}
+- [Geograpy](https://github.com/ushahidi/geograpy) - picked this one for now
+- [geotext](https://github.com/elyase/geotext)
 
 geograpy is more advanced and bigger in scope compared to geotext and can do everything geotext does. On the other hand geotext is leaner: has no external dependencies, is faster (re vs nltk) and also depends on libraries and data covered with more permissive licenses.

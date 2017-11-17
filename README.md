@@ -21,8 +21,24 @@ docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/
 # Kafka
 docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka --link zookeeper:zookeeper confluent/kafka
 
-# Cassandra [1]
+# Cassandra cluster[1]
 docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cass1 cassandra:2.1.19
+
+# In case this is the first time starting up cassandra we need to ensure
+        # that all nodes do not start up at the same time. Cassandra has a
+        # 2 minute rule i.e. 2 minutes between each node boot up.This only needs to happen the firt
+        # time we bootup. Configuration below assumes if the Cassandra data
+        # directory is empty it means that we are starting up for the first
+        # time.
+
+#check IP address : docker exec cass1 cat /etc/hosts
+
+docker run -d  --name cass2 -e CASSANDRA_SEEDS="xxx.xxx.xxx.xxx" cassandra:2.1.19
+
+docker run -d  --name cass3 -e CASSANDRA_SEEDS="xxx.xxx.xxx.xxx" cassandra:2.1.19
+
+# verify cluster
+docker exec cass1 nodetool status
 
 # commented out previous way to run cassandra
 # docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cassandra cassandra:3.7

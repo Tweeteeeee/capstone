@@ -18,12 +18,13 @@ RawData -> Kafka -> Spark -> Kafka -> Redis ---> ELK
 # Zookeeper
 docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/zookeeper
 
-# Kafka cluster
+# Kafka single node
 docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka --link zookeeper:zookeeper confluent/kafka
-
-docker run -d  -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka2 --link zookeeper:zookeeper confluent/kafka
-
-docker run -d  -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka3 --link zookeeper:zookeeper confluent/kafka
+#kafka cluster
+Scale up the kafka nodes. In this example it will increase kafka nodes to 4.
+```
+./kafka-cluster.sh scale 4
+```
 
 # Cassandra cluster[1]
 docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cass1 cassandra:2.1.19

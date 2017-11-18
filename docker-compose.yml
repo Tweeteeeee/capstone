@@ -1,0 +1,20 @@
+version: '1'
+services:
+  zookeeper:
+    image: confluent/kafka
+    hostname: zookeeper
+    ports:
+      - "2181"
+    environment:
+      RUN_TYPE: "zookeeper"
+  kafka:
+    image: confluent/kafka
+    hostname: kafka
+    ports:
+      - "9092"
+    environment:
+      RUN_TYPE: "kafka"
+    links:
+      - zookeeper
+    volumes:
+      - /var/run/docker.sock:/docker.sock

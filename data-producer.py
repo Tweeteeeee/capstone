@@ -70,15 +70,9 @@ def fetch_tweet(producer):
         data = {
             '_unit_id': fields[0],
             'gender': fields[5],
-            'description': fields[10],
-            'name': fields[14],
-            'retweet_count': fields[17],
             'text': fields[19],
             'hashtags': hashtags,
-            'tweet_coord': fields[20],
             'tweet_count': fields[21],
-            'tweet_created': fields[22],
-            'tweet_id': fields[23],
             'tweet_location': tweet_location,
             'normalized_location': normalized_location,
             'user_timezone': fields[25]

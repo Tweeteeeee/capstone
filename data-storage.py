@@ -36,15 +36,9 @@ def persist_data(tweet_data, cassandra_session):
         [{
             '_unit_id': fields[0],
             'gender': fields[5],
-            'description': fields[10],
-            'name': fields[14],
-            'retweet_count': fields[17],
             'text': fields[19],
             'hashtags': hashtags
-            'tweet_coord': fields[20],
             'tweet_count': fields[21],
-            'tweet_created': fields[22],
-            'tweet_id': fields[23],
             'tweet_location': tweet_location,
             'normalized_location': normalized_location,
             'user_timezone': fields[25]
@@ -58,15 +52,10 @@ def persist_data(tweet_data, cassandra_session):
         parsed = json.loads(tweet_data)
         unit_id = str(parsed.get('_unit_id'))
         gender = parsed.get('gender')
-        description = str(parsed.get('description'))
         name = str(parsed.get('name'))
-        retweet_count = parsed.get('retweet_count')
         tweet_text = str(parsed.get('text'))
         hashtags = str(parsed.get('hashtags'))
-        tweet_coord = parsed.get('tweet_coord')
         tweet_count = parsed.get('tweet_count')
-        tweet_created = parsed.get('tweet_created')
-        tweet_id = str(parsed.get('tweet_id'))
         tweet_location = parsed.get('tweet_location')
         normalized_location = parsed.get('normalized_location')
         user_timezone = parsed.get('user_timezone')

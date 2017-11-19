@@ -70,6 +70,7 @@ def fetch_tweet(producer):
         data = {
             '_unit_id': fields[0],
             'gender': fields[5],
+            'name': fields[14],
             'text': fields[19],
             'hashtags': hashtags,
             'tweet_count': fields[21],

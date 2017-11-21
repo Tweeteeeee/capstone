@@ -4,6 +4,7 @@ import logging
 import argparse
 
 from ttp import ttp
+import geograpy
 
 logging.basicConfig()
 logger = logging.getLogger('data-processor')
@@ -13,16 +14,6 @@ key_space = 'tweet'
 data_table = 'tweet'
 # - default cassandra nodes to connect
 contact_points = '127.0.0.1'
-
-def list_to_str(input_list):
-    result = ''
-    is_first = True
-    for item in input_list:
-        if not is_first:
-            result += ','
-        result += item
-        is_first = False
-    return result
 
 if __name__ == '__main__':
     # - setup command line arguments
@@ -53,10 +44,29 @@ if __name__ == '__main__':
             continue
         parsed_entities = parser.parse(tweet)
         hashtags = parsed_entities.tags
-        tags = list_to_str(hashtags)
+        tags = ','.join(hashtags)
         logger.info('hashtags: %s', tags)
 
         user_mentions = parsed_entities.users
-        mentions = list_to_str(user_mentions)
+        mentions = ','.join(user_mentions)
         logger.info('mentions: %s', mentions)
 
+        tweet_location = item.tweet_location
+        logger.info('original tweet location: %s\n' % tweet_location)
+        if tweet_location is None or not tweet_location:
+            continue
+        location = geograpy.get_place_context(text=tweet_location)
+
+        regions = ''
+        if location.regions is not None:
+            regions = ','.join(location.regions)
+        countries = ''
+        if location.countries is not None:
+            countries = ','.join(location.countries)
+        cities = ''
+        if location.cities is not None:
+            cities = ','.join(location.cities)
+
+        logger.info('normalized countries: %s\n' % countries)
+        logger.info('normalized regions: %s\n' % regions)
+        logger.info('normalized cities: %s\n' % cities)

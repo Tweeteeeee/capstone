@@ -20,7 +20,7 @@ docker run -d -p 2181:2181 -p 2888:2888 -p 3888:3888 --name zookeeper confluent/
 
 # Kafka single node
 docker run -d -p 9092:9092 -e KAFKA_ADVERTISED_HOST_NAME=localhost -e KAFKA_ADVERTISED_PORT=9092 --name kafka --link zookeeper:zookeeper confluent/kafka
-#kafka cluster
+# Kafka cluster
 Scale up the kafka nodes. In this example it will increase kafka nodes to 4.
 
 ./kafka-cluster.sh scale 4
@@ -35,7 +35,7 @@ docker run -d -p 7199:7199 -p 9042:9042 -p 9160:9160 -p 7001:7001 --name cass1 c
         # directory is empty it means that we are starting up for the first
         # time.
 
-#check IP address : docker exec cass1 cat /etc/hosts
+# check IP address : docker exec cass1 cat /etc/hosts
 
 docker run -d  --name cass2 -e CASSANDRA_SEEDS="xxx.xxx.xxx.xxx" cassandra:2.1.19
 
@@ -91,21 +91,37 @@ run redis-cli
 
 SUBSCRIBE tweet
 ```
-## pig load data from cassandra
+## pig load/store data from/to cassandra
 ```sh
 # start pig docker image
 docker run -d -P -p 2222:22 -p 8000:8000 -p 19888:19888 -p 8088:8088 -p 50070:50070 -v /path_to_capstone/capstone:/src --name pig daijyc/week2_1
 
 cd hadoop-2.7.3/
 ./start-all.sh
-export PIG_INITIAL_ADDRESS=192.168.1.100; # replace with your ip address
-# find your host machine ip address, go to a new terminal
-ifconfig | grep inet
 export PIG_RPC_PORT=9160;
 export PIG_PARTITIONER=org.apache.cassandra.dht.Murmur3Partitioner;
+export PIG_INITIAL_ADDRESS=192.168.1.100; # replace with your ip address
+# find your host machine ip address, go to a new terminal, outside of pig docker image
+ifconfig | grep inet
+# or find it from the docker image that runs cassandra
+docker exec cassandra cat /etc/hosts
 
+# create table in cassandra, go to a new terminal, outside of pig docker image
+docker exec -it cassandra bash
+./usr/bin/cqlsh
+CREATE TABLE tweetcount (tweet_location text, tweet_count bigint, PRIMARY KEY (tweet_location));
+# check if tweetcount table is created
+DESCRIBE KEYSPACE tweet
+
+# go back to pig docker image
+cd /src/pig-scripts
 pig tweet-count-cassandra.pig
 # check job running status in http://localhost:8088/
+
+# check whether data is written to cassandra
+# go to terminal that runs docker exec -it cassandra bash
+SELECT COUNT(*) FROM tweet.tweetcount;
+
 ```
 ## Extract Twitter entities
 According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)

@@ -139,11 +139,12 @@ pig hahstags-count-cassandra.pig
 # check whether data is written to cassandra
 # go to terminal that runs docker exec -it cassandra bash
 SELECT COUNT(*) FROM tweet.tweetcount;
+SELECT COUNT(*) FROM tweet.hashtagcount;
 ```
 
 ## Data Visualization
 
-### Setup elasticsearch, logstash and kibana using docker containers
+### Setup elasticsearch and kibana using docker containers
 ```sh
 # start elasticsearch
 docker run -d -p 9200:9200 -p 9300:9300 --name elasticsearch docker.elastic.co/elasticsearch/elasticsearch:6.0.0
@@ -158,37 +159,100 @@ docker exec elasticsearch cat /etc/hosts
 docker run -d -p 5601:5601 --name kibana -e ELASTICSEARCH_URL=http://172.17.0.6:9200 docker.elastic.co/kibana/kibana:6.0.0  # replace 172.17.0.6 with your ip address
 
 # open http://localhost:5601/status to verify kibana is working
+```
 
-# configure logstash
+### Setup logstash
 
-# first replace 172.17.0.6 with your elasticsearch docker container ip address in two files:
+#### configure logstash to connect with elasticsearch
+```sh
+# first replace 172.17.0.6 with your elasticsearch docker container ip address in the files below:
 # capstone/logstash/logstash.yml file, xpack.monitoring.elasticsearch.url: http://172.17.0.6:9200
-# capstone/logstash/pipeline/logstash.conf file,
+# capstone/logstash/pipeline-redis/logstash.conf file,
 # elasticsearch {
 #    hosts => ["172.17.0.6:9200"]
 #    ...
 # }
+# capstone/logstash/pipeline-tweetcount/logstash.conf file,
+# elasticsearch {
+#    hosts => ["172.17.0.6:9200"]
+#    ...
+# }
+# capstone/logstash/pipeline-hashtagcount/logstash.conf file,
+# elasticsearch {
+#    hosts => ["172.17.0.6:9200"]
+#    ...
+# }
+```
 
-# then replace 172.17.0.8 with your redis docker container ip address in
-# capstone/logstash/pipeline/logstash.conf file,
+#### configure logstash to extract from Redis
+```sh
+# replace 172.17.0.5 with your redis docker container ip address in
+# capstone/logstash/pipeline-redis/logstash.conf file,
 # redis {
-#    host => "172.17.0.8"
+#    host => "172.17.0.5"
 #    ...
 # }
 # find ip address of redis docker container
 docker exec redis cat /etc/hosts
 
 # start logstash
-# please find the correct path of capstone/logstash/pipeline/ in your local machine and use that instead
-docker run --rm -it -v capstone/logstash/pipeline/:/usr/share/logstash/pipeline/ -v capstone/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml --name logstash docker.elastic.co/logstash/logstash:6.0.0
+# please find the correct path of capstone/logstash/pipeline-redis/ in your local machine and use that instead
+docker run --rm -it -v capstone/logstash/pipeline-redis/:/usr/share/logstash/pipeline/ -v capstone/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml --name logstash-redis docker.elastic.co/logstash/logstash:6.0.0
 
 # verify elasticsearch server is receiving data and indexing
 curl 'localhost:9200/_cat/indices?v'
+# look for index name tweet
 
 # open http://localhost:5601/, create an index pattern in kinana,
-# Index pattern: tweet
+# On the left sidebar, select Management Tab -> Index Patterns -> Create Index Pattern
+# Fill in Index pattern: tweet
 # Time Filter field name: @timestamp
-# go to Discover tab, you should see some graph now
+# go to Discover tab, select the index name tweet, you should see some graph now
+# Note: you may need to adjust Time Range accordingly
+```
+
+#### configure logstash to extract from Cassandra
+```sh
+# replace 172.17.0.2 with your cassandra docker container ip address in
+# capstone/logstash/pipeline-tweetcount/logstash.conf file,
+#  jdbc {
+#    jdbc_connection_string => "jdbc:cassandra://172.17.0.2:9160/tweet"
+#    ...
+# }
+# capstone/logstash/pipeline-hashtagcount/logstash.conf file,
+#  jdbc {
+#    jdbc_connection_string => "jdbc:cassandra://172.17.0.2:9160/tweet"
+#    ...
+# }
+# find ip address of cassandra docker container
+docker exec cassandra cat /etc/hosts
+
+# start logstash
+# please find the correct path of capstone/logstash/pipeline-tweetcount/ in your local machine and use that instead
+docker run --rm -it -v capstone/logstash/pipeline-tweetcount/:/usr/share/logstash/pipeline/ -v capstone/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml --name logstash-tweetcount docker.elastic.co/logstash/logstash:6.0.0
+
+# verify elasticsearch server is receiving data and indexing
+curl 'localhost:9200/_cat/indices?v'
+# look for index name tweetcount
+
+# open http://localhost:5601/, create an index pattern in kinana,
+# On the left sidebar, select Management Tab -> Index Patterns -> Create Index Pattern
+# Fill in Index pattern: tweetcount
+# Time Filter field name: @timestamp
+# go to Discover tab, select the index name tweetcount, you should see some graph now
+
+# please find the correct path of capstone/logstash/pipeline-hashtagcount/ in your local machine and use that instead
+docker run --rm -it -v capstone/logstash/pipeline-hashtagcount/:/usr/share/logstash/pipeline/ -v capstone/logstash/logstash.yml:/usr/share/logstash/config/logstash.yml --name logstash-hashtagcount docker.elastic.co/logstash/logstash:6.0.0
+
+# verify elasticsearch server is receiving data and indexing
+curl 'localhost:9200/_cat/indices?v'
+# look for index name hashtagcount
+
+# open http://localhost:5601/, create an index pattern in kinana,
+# On the left sidebar, select Management Tab -> Index Patterns -> Create Index Pattern
+# Fill in Index pattern: hashtagcount
+# Time Filter field name: @timestamp
+# go to Discover tab, select the index name hashtagcount, you should see some graph now
 ```
 
 ## Clean Data

@@ -1,6 +1,11 @@
 # Capstone
 Tweet Analyzer
 
+## Document
+[Proposal](https://docs.google.com/document/d/1fgB14sUzIrOSmZvBAXYs-taQJIpIAaeLCIw9hA8ErQI/edit#heading=h.h8arf2uqoqk1)
+
+[PPT](https://docs.google.com/presentation/d/1sY_qxrlaWQfmARrHLL_aLZ48u5H9R8zkpd3MfmSdX98/edit#slide=id.p3)
+
 ## Requirements
 ```
 # Install dependencies
@@ -79,6 +84,7 @@ spark-submit --jars spark-streaming-kafka-0-8-assembly_2.11-2.0.0.jar stream-pro
 ```
 
 ## Verification Steps
+
 ### Use kafka consumer to read from kafka topic
 open a python terminal
 ```python
@@ -99,6 +105,7 @@ python data-processor.py tweet tweet localhost
 /usr/local/Cellar/redis/4.0.2/bin/redis-cli -h localhost
 SUBSCRIBE tweet
 ```
+
 ## pig load/store data from/to cassandra
 ```sh
 # start pig docker container
@@ -115,16 +122,18 @@ ifconfig | grep inet
 # or find ip address of the running cassandra docker container
 docker exec cassandra cat /etc/hosts
 
-# create table in cassandra, go to a new terminal, outside of pig docker container
+# create tables in cassandra, go to a new terminal, outside of pig docker container
 docker exec -it cassandra bash
 ./usr/bin/cqlsh
 CREATE TABLE tweetcount (tweet_location text, tweet_count bigint, PRIMARY KEY (tweet_location));
-# check if tweetcount table is created
+CREATE TABLE hashtagcount (hashtag text, count bigint, PRIMARY KEY (hashtag));
+# check if tweetcount, hashtagcount tables are created
 DESCRIBE KEYSPACE tweet
 
 # go back to pig docker container
 cd /src/pig-scripts
 pig tweet-count-cassandra.pig
+pig hahstags-count-cassandra.pig
 # check job running status in http://localhost:8088/
 
 # check whether data is written to cassandra
@@ -133,6 +142,7 @@ SELECT COUNT(*) FROM tweet.tweetcount;
 ```
 
 ## Data Visualization
+
 ### Setup elasticsearch, logstash and kibana using docker containers
 ```sh
 # start elasticsearch
@@ -182,6 +192,7 @@ curl 'localhost:9200/_cat/indices?v'
 ```
 
 ## Clean Data
+
 ### Extract Twitter entities
 According to Twitter doc, [tweet_object](https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object)
 

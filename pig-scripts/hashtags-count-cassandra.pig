@@ -21,7 +21,10 @@ AS (
 
 words = FOREACH a GENERATE FLATTEN(TOKENIZE(REPLACE(hashtags, '[\\[\\]]', ''), ',')) AS word;
 grouped = group words by word;
-wordcount = foreach grouped generate group, COUNT(words) AS count;
+wordcount = foreach grouped generate group AS hashtag, COUNT(words) AS count;
 ordered = order wordcount by count DESC;
 top20 = limit ordered 20;
 dump top20;
+
+data_to_insert = FOREACH top20 GENERATE TOTUPLE(TOTUPLE('hashtag', hashtag)), TOTUPLE(count);
+STORE data_to_insert INTO 'cql://tweet/hashtagcount?output_query=UPDATE+tweet.hashtagcount+SET+count+%3D+%3F+' USING CqlStorage();

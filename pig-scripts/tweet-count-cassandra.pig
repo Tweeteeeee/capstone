@@ -21,9 +21,8 @@ AS (
 
 b = group a by normalized_location;
 c = foreach b generate group AS tweet_location, SUM(a.tweet_count) AS tweet_count;
--- dump c;
-
 d = filter c by (tweet_location is not null and TRIM(tweet_location) != '');
 dump d;
+
 data_to_insert = FOREACH d GENERATE TOTUPLE(TOTUPLE('tweet_location', tweet_location)), TOTUPLE(tweet_count);
 STORE data_to_insert INTO 'cql://tweet/tweetcount?output_query=UPDATE+tweet.tweetcount+SET+tweet_count+%3D+%3F+' USING CqlStorage();

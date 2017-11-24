@@ -1,0 +1,32 @@
+[2017-11-22T11:27:08,696][INFO ][o.e.n.Node               ] [] initializing ...
+[2017-11-22T11:27:09,603][INFO ][o.e.e.NodeEnvironment    ] [XxqdHoK] using [1] data paths, mounts [[/ (/dev/sda1)]], net usable_space [50.6gb], net total_space [74.6gb], types [ext4]
+[2017-11-22T11:27:09,618][INFO ][o.e.e.NodeEnvironment    ] [XxqdHoK] heap size [1015.6mb], compressed ordinary object pointers [true]
+[2017-11-22T11:27:09,643][INFO ][o.e.n.Node               ] node name [XxqdHoK] derived from node ID [XxqdHoKEQBGcKqnV91DpjA]; set [node.name] to override
+[2017-11-22T11:27:09,656][INFO ][o.e.n.Node               ] version[6.0.0], pid[23005], build[8f0685b/2017-11-10T18:41:22.859Z], OS[Linux/4.10.0-40-generic/amd64], JVM[Oracle Corporation/OpenJDK 64-Bit Server VM/1.8.0_151/25.151-b12]
+[2017-11-22T11:27:09,665][INFO ][o.e.n.Node               ] JVM arguments [-Xms1g, -Xmx1g, -XX:+UseConcMarkSweepGC, -XX:CMSInitiatingOccupancyFraction=75, -XX:+UseCMSInitiatingOccupancyOnly, -XX:+AlwaysPreTouch, -Xss1m, -Djava.awt.headless=true, -Dfile.encoding=UTF-8, -Djna.nosys=true, -XX:-OmitStackTraceInFastThrow, -Dio.netty.noUnsafe=true, -Dio.netty.noKeySetOptimization=true, -Dio.netty.recycler.maxCapacityPerThread=0, -Dlog4j.shutdownHookEnabled=false, -Dlog4j2.disable.jmx=true, -XX:+HeapDumpOnOutOfMemoryError, -Des.path.home=/home/zoe/Desktop/BigData/elasticsearch-6.0.0, -Des.path.conf=/home/zoe/Desktop/BigData/elasticsearch-6.0.0/config]
+[2017-11-22T11:27:15,347][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [aggs-matrix-stats]
+[2017-11-22T11:27:15,351][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [analysis-common]
+[2017-11-22T11:27:15,354][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [ingest-common]
+[2017-11-22T11:27:15,355][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [lang-expression]
+[2017-11-22T11:27:15,357][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [lang-mustache]
+[2017-11-22T11:27:15,358][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [lang-painless]
+[2017-11-22T11:27:15,361][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [parent-join]
+[2017-11-22T11:27:15,364][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [percolator]
+[2017-11-22T11:27:15,365][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [reindex]
+[2017-11-22T11:27:15,368][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [repository-url]
+[2017-11-22T11:27:15,368][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [transport-netty4]
+[2017-11-22T11:27:15,368][INFO ][o.e.p.PluginsService     ] [XxqdHoK] loaded module [tribe]
+[2017-11-22T11:27:15,369][INFO ][o.e.p.PluginsService     ] [XxqdHoK] no plugins loaded
+[2017-11-22T11:27:24,307][INFO ][o.e.d.DiscoveryModule    ] [XxqdHoK] using discovery type [zen]
+[2017-11-22T11:27:31,528][INFO ][o.e.n.Node               ] initialized
+[2017-11-22T11:27:31,529][INFO ][o.e.n.Node               ] [XxqdHoK] starting ...
+[2017-11-22T11:27:32,887][INFO ][o.e.t.TransportService   ] [XxqdHoK] publish_address {127.0.0.1:9300}, bound_addresses {[::1]:9300}, {127.0.0.1:9300}
+[2017-11-22T11:27:36,387][INFO ][o.e.c.s.MasterService    ] [XxqdHoK] zen-disco-elected-as-master ([0] nodes joined), reason: new_master {XxqdHoK}{XxqdHoKEQBGcKqnV91DpjA}{7tTMU6M9Q4iWJWDfsGt0nw}{127.0.0.1}{127.0.0.1:9300}
+[2017-11-22T11:27:36,407][INFO ][o.e.c.s.ClusterApplierService] [XxqdHoK] new_master {XxqdHoK}{XxqdHoKEQBGcKqnV91DpjA}{7tTMU6M9Q4iWJWDfsGt0nw}{127.0.0.1}{127.0.0.1:9300}, reason: apply cluster state (from master [master {XxqdHoK}{XxqdHoKEQBGcKqnV91DpjA}{7tTMU6M9Q4iWJWDfsGt0nw}{127.0.0.1}{127.0.0.1:9300} committed version [1] source [zen-disco-elected-as-master ([0] nodes joined)]])
+[2017-11-22T11:27:36,560][INFO ][o.e.h.n.Netty4HttpServerTransport] [XxqdHoK] publish_address {127.0.0.1:9200}, bound_addresses {[::1]:9200}, {127.0.0.1:9200}
+[2017-11-22T11:27:36,563][INFO ][o.e.n.Node               ] [XxqdHoK] started
+[2017-11-22T11:27:36,570][INFO ][o.e.g.GatewayService     ] [XxqdHoK] recovered [0] indices into cluster_state
+[2017-11-22T11:29:13,842][INFO ][o.e.n.Node               ] [XxqdHoK] stopping ...
+[2017-11-22T11:29:13,920][INFO ][o.e.n.Node               ] [XxqdHoK] stopped
+[2017-11-22T11:29:13,924][INFO ][o.e.n.Node               ] [XxqdHoK] closing ...
+[2017-11-22T11:29:13,981][INFO ][o.e.n.Node               ] [XxqdHoK] closed

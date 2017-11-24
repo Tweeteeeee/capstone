@@ -1,0 +1,11 @@
+[2017-11-21T21:10:18,443][INFO ][logstash.modules.scaffold] Initializing module {:module_name=>"fb_apache", :directory=>"/home/zoe/Desktop/BigData/logstash-6.0.0/modules/fb_apache/configuration"}
+[2017-11-21T21:10:18,470][INFO ][logstash.modules.scaffold] Initializing module {:module_name=>"netflow", :directory=>"/home/zoe/Desktop/BigData/logstash-6.0.0/modules/netflow/configuration"}
+[2017-11-21T21:10:18,654][INFO ][logstash.setting.writabledirectory] Creating directory {:setting=>"path.queue", :path=>"/home/zoe/Desktop/BigData/logstash-6.0.0/data/queue"}
+[2017-11-21T21:10:18,659][INFO ][logstash.setting.writabledirectory] Creating directory {:setting=>"path.dead_letter_queue", :path=>"/home/zoe/Desktop/BigData/logstash-6.0.0/data/dead_letter_queue"}
+[2017-11-21T21:10:20,122][WARN ][logstash.config.source.multilocal] Ignoring the 'pipelines.yml' file because modules or command line options are specified
+[2017-11-21T21:10:20,240][INFO ][logstash.agent           ] No persistent UUID file found. Generating new UUID {:uuid=>"ff237524-0f11-4209-b1b5-8f1114833d12", :path=>"/home/zoe/Desktop/BigData/logstash-6.0.0/data/uuid"}
+[2017-11-21T21:10:21,190][INFO ][logstash.config.source.local.configpathloader] No config files found in path {:path=>"/home/zoe/Desktop/BigData/logstash-6.0.0/logstash-output-cassandra.conf"}
+[2017-11-21T21:14:40,316][INFO ][logstash.modules.scaffold] Initializing module {:module_name=>"fb_apache", :directory=>"/home/zoe/Desktop/BigData/logstash-6.0.0/modules/fb_apache/configuration"}
+[2017-11-21T21:14:40,346][INFO ][logstash.modules.scaffold] Initializing module {:module_name=>"netflow", :directory=>"/home/zoe/Desktop/BigData/logstash-6.0.0/modules/netflow/configuration"}
+[2017-11-21T21:14:41,730][WARN ][logstash.config.source.multilocal] Ignoring the 'pipelines.yml' file because modules or command line options are specified
+[2017-11-21T21:14:42,644][INFO ][logstash.config.source.local.configpathloader] No config files found in path {:path=>"/home/zoe/Desktop/BigData/logstash-6.0.0/logstash-output-cassandra.conf"}
